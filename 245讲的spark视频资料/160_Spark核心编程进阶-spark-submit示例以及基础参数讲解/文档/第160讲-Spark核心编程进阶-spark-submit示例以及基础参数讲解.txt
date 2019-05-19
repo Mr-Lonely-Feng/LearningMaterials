@@ -1,0 +1,27 @@
+使用spark-submit提交spark应用
+
+将我们的spark工程打包好之后，就可以使用spark-submit脚本提交工程中的spark应用了
+spark-submit脚本会设置好spark的classpath环境变量（用于类加载）和相关的依赖，而且还可以支持多种不同的集群管理器和不同的部署模式
+
+以下是一个spark应用提交脚本的示例，以及其基本语法
+一般会将执行spark-submit脚本的命令，放置在一个自定义的shell脚本里面，所以说这是比较灵活的一种做法
+建议大家还是要熟悉linux操作系统，不需要太熟悉，会基本的操作就可以了
+
+wordcount.sh
+
+/usr/local/spark/bin/spark-submit \
+--class org.leo.spark.study.WordCount \
+--master spark://192.168.0.101:7077 \
+--deploy-mode client \
+--conf <key>=<value> \
+/usr/local/spark-study/spark-study.jar \
+${1}
+ 
+以下是上面的spark-submit
+
+--class: spark应用程序对应的主类，也就是spark应用运行的主入口，通常是一个包含了main方法的java类或scala类，需要包含全限定包名，比如org.leo.spark.study.WordCount
+--master: spark集群管理器的master URL，standalone模式下，就是ip地址+端口号，比如spark://192.168.0.101:7077，standalone默认端口号就是7077
+--deploy-mode: 部署模式，决定了将driver进程在worker节点上启动，还是在当前本地机器上启动；默认是client模式，就是在当前本地机器上启动driver进程，如果是cluster，那么就会在worker上启动
+--conf: 配置所有spark支持的配置属性，使用key=value的格式；如果value中包含了空格，那么需要将key=value包裹的双引号中
+application-jar: 打包好的spark工程jar包，在当前机器上的全路径名
+application-arguments: 传递给主类的main方法的参数; 在shell中用${1}这种格式获取传递给shell的参数；然后在比如java中，可以通过main方法的args[0]等参数获取

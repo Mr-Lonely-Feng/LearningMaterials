@@ -1,0 +1,26 @@
+spark-defaults.conf
+
+spark.eventLog.enabled  true
+spark.eventLog.dir      hdfs://192.168.0.103:9000/spark-events
+spark.eventLog.compress true
+
+spark-env.sh
+
+export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=50 -Dspark.history.fs.logDirectory=hdfs://192.168.0.103:9000/spark-events"
+
+务必预先创建好hdfs://192.168.0.103:9000/spark-events目录
+而且要注意，spark.eventLog.dir与spark.history.fs.logDirectory指向的必须是同一个目录
+因为spark.eventLog.dir会指定作业事件记录在哪里，spark.history.fs.logDirectory会指定从哪个目录中去读取作业数据
+
+启动HistoryServer: ./sbin/start-history-server.sh
+
+访问地址: 192.168.0.103:18080
+
+实验
+
+1、停止集群
+2、配置spark-env.sh
+3、重启集群
+4、启动history server
+5、运行spark-shell，在standalone模式下和yarn模式下，分别执行一个作业
+6、通过192.168.80.103:18080的HistoryServer UI可以看到所有运行后的作业信息

@@ -1,0 +1,13 @@
+关于spark集群架构的一些说明
+
+1、每个spark application，都有属于自己的executor进程；绝对不可能出现多个spark application共享一个executor进程的
+	executor进程，在整个spark application运行的生命周期内，都会一直存在，不会自己消失的
+	executor进程，最主要的，就是使用多线程的方式，运行SparkContext分配过来的task，来一批task就执行一批，一批执行完了，再换下一批task执行
+2、spark application，跟集群管理器之间，是透明的
+	不管你是哪个集群管理器，我就知道，我找你就可以申请到executor进程就好了
+	所以说，就算在一个能够容纳其他类型的计算作业的集群管理器中，也可以提交spark作业，比如说YARN、Mesos这种
+	大公司里，其实一般都是用YARN作为大数据计算作业管理器的，包括mapreduce、hive、storm和spark，统一在yarn上面运行，统一调度和管理公司的系统资源
+3、driver（其实也就是咱们的main类运行的jvm进程），必须时刻监听着属于它这个spark application的executor进程发来的通信和连接
+	而且driver除了监听，自己也得负责调度整个spark作业（你自己写的spark代码）的调度和运行，也得大量跟executor进程通信，给他们分派计算任务
+	所以driver在网络环境中的位置，还是很重要的，driver尽量离spark集群得近一些
+4、上面说了，driver要调度task给executor执行，所以driver最好和spark集群在一片网络内

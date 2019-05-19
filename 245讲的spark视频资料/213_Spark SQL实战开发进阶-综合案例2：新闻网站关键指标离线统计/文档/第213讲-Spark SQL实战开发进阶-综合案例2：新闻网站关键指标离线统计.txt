@@ -1,0 +1,43 @@
+案例背景
+
+新闻网站
+1、版块
+2、新闻页面
+3、新用户注册
+4、用户跳出
+
+案例需求分析
+
+每天每个页面的PV：PV是Page View，是指一个页面被所有用户访问次数的总和，页面被访问一次就被记录1次PV
+每天每个页面的UV：UV是User View，是指一个页面被多少个用户访问了，一个用户访问一次是1次UV，一个用户访问多次还是1次UV
+新用户注册比率：当天注册用户数 / 当天未注册用户数
+用户跳出率：IP只浏览了一个页面就离开网站的次数/网站总访问数（PV）
+版块热度排行榜：根据每个版块每天被访问的次数，做出一个排行榜
+
+网站日志格式
+date timestamp userid pageid section action 
+
+日志字段说明
+date: 日期，yyyy-MM-dd格式
+timestamp: 时间戳
+userid: 用户id
+pageid: 页面id
+section: 新闻版块
+action: 用户行为，两类，点击页面和注册
+
+模拟数据生成程序
+模式数据演示
+
+在hive中创建访问日志表
+
+create table news_access (
+  date string,
+  timestamp bigint,
+  userid bigint,
+  pageid bigint,
+  section string,
+  action string) 
+
+将模拟数据导入hive表中
+
+load data local inpath '/usr/local/test/news_access.log' into table news_access;

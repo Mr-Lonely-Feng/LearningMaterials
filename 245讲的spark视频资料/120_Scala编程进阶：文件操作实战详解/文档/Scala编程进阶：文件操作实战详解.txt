@@ -1,0 +1,123 @@
+遍历一个文件中的每一行
+
+必须导入scala.io.Source类: import scala.io.Source
+
+方法一: 使用Source.getLines返回的迭代器
+val source = Source.fromFile("C://Users//Administrator//Desktop//test.txt", "UTF-8")
+val lineIterator = source.getLines
+for (line <- lineIterator) println(line)
+
+方法二: 将Source.getLines返回的迭代器，转换成数组
+
+这里说明一点: 一个BufferedSource对象的getLines方法，只能调用一次，一次调用完之后，遍历了迭代器里所有的内容，就已经把文件里的内容读取完了
+如果反复调用source.getLines，是获取不到内容的
+此时，必须重新创建一个BufferedSource对象
+
+val source = Source.fromFile("C://Users//Administrator//Desktop//test.txt", "UTF-8")
+val lines = source.getLines.toArray
+for(line <- lines) println(line)
+
+方法三: 调用Source.mkString，返回文本中所有的内容
+val source = Source.fromFile("C://Users//Administrator//Desktop//test.txt", "UTF-8")
+val lines = source.mkString
+
+使用完BufferedSource对象之后，调用BufferedSource.close方法，关闭IO流资源
+
+-------------------------------------------------------------------------------------------------------
+
+遍历一个文件中的每一个字符
+
+BufferedSource，也实现了一个Iterator[Char]的这么一个trait
+
+val source = Source.fromFile("C://Users//Administrator//Desktop//test.txt", "UTF-8")
+for(c <- source) print(c)
+
+-------------------------------------------------------------------------------------------------------
+
+从URL以及字符串中读取字符
+
+val source = Source.fromURL("http://www.baidu.com", "UTF-8")
+val source = Source.fromString("Hello World")
+
+-------------------------------------------------------------------------------------------------------
+
+结合Java IO流，读取任意文件
+
+这里说明一点，大家千万不要以为，spark就是会scala就可以了
+也千万不要以为，scala，就是跟java一点关系都没有，甚至于完全可以替代java
+上述说法，都是很荒谬的，都是门外汉才会这么认为
+
+如果你真的深入读了spark的源代码
+真的对scala掌握的很深入，你就会知道一点
+spark的源码实际上是由scala和java共同编写而成的，Java的多线程
+scala，本身的编程语言的功能，就不是特别的强大和完善，比如说，scala甚至不能很方便地写文件，必须依赖于java的io流才可以
+
+所以说，scala，其实主要就是针对某些特定领域的一些复杂系统的，比较适用的一种编程语言而已
+完全无法替代java的，scala和java是相辅相成，荣辱与共的这么一种，共生关系
+
+可以这么跟大家说
+scala还有一种作用，可以用scala，编写spark的作业
+但是问题是，为什么，我们要用java开发hive udf、mapreduce、hbase client、zookeeper client，用Java开发storm的作业
+然后作为一个大数据工程师，偏偏用到spark的时候，一定要用scala开发呢？
+用spark开发作业，用java，个人认为，个人观点，是最合适的，最通用的，最可移植的，最方便维护的
+
+scala，这套课程里，scala编程详解、scala编程进阶
+1、有些公司的技术leader，要求用scala开发spark作业，我也没办法，我是极力反对的; 保证学员，学了这套课程以后，可以用scala去工作和面试
+2、有些同学，可能压根儿不会java; 大多数是上学的时候，主要是搞算法的，或者只会c++，只会python; 这套课程学了，不用会java，那么也可以精通和使用spark
+3、最重要的一点，深入掌握scala所有的初中高级语法，才能透彻和深入的理解和阅读spark的源码
+4、也有，但是很少，就是有些公司，可能会用scala，开发复杂的大型分布式后端系统
+
+案例: 结合java IO流，做一个文件拷贝的案例
+
+import java.io._
+
+val fis = new FileInputStream(new File("C://Users//Administrator//Desktop//test.txt"))
+val fos = new FileOutputStream(new File("C://Users//Administrator//Desktop//test3.txt"))
+
+val buf = new Array[Byte](1024)
+fis.read(buf)
+fos.write(buf, 0, 1024)
+
+fis.close()
+fos.close()
+
+-------------------------------------------------------------------------------------------------------
+
+结合Java IO流，写文件
+
+val pw = new PrintWriter("C://Users//Administrator//Desktop//test4.txt")
+pw.println("Hello World")
+pw.close()
+
+-------------------------------------------------------------------------------------------------------
+
+递归遍历子目录
+
+def getSubdirIterator(dir: File): Iterator[File] = {
+  val childDirs = dir.listFiles.filter(_.isDirectory)
+  childDirs.toIterator ++ childDirs.toIterator.flatMap(getSubdirIterator _)
+}
+
+val iterator = getSubdirIterator(new File("C://Users//Administrator//Desktop"))
+
+for(d <- iterator) println(d)
+
+-------------------------------------------------------------------------------------------------------
+
+序列化以及反序列化（Java序列化和反序列化机制）
+
+如果要序列化，那么就必须让类，有一个@SerialVersionUID，定义一个版本号
+要让类继承一个Serializable trait
+
+@SerialVersionUID(42L) class Person(val name: String) extends Serializable
+val leo = new Person("leo")
+
+import java.io._
+
+val oos = new ObjectOutputStream(new FileOutputStream("C://Users//Administrator//Desktop//test.obj"))
+oos.writeObject(leo)
+oos.close()
+
+val ois = new ObjectInputStream(new FileInputStream("C://Users//Administrator//Desktop//test.obj"))
+val restoredLeo = ois.readObject().asInstanceOf[Person]
+restoredLeo.name

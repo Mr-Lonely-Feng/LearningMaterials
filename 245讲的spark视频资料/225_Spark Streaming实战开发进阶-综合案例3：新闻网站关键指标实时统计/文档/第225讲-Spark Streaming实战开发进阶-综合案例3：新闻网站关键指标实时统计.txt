@@ -1,0 +1,2 @@
+kafka-topics.sh --zookeeper 192.168.0.103:2181,192.168.0.104:2181 --topic news-access --replication-factor 1 --partitions 1 --create
+kafka-console-consumer.sh --zookeeper 192.168.0.103:2181,192.168.0.104:2181 --topic news-access --from-beginning

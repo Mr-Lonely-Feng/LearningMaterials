@@ -1,0 +1,20 @@
+shuffle操作，是spark中一些特殊的算子操作会触发的一种操作
+shuffle操作，会导致大量的数据在不同的机器和节点之间进行传输，因此也是spark中最复杂、最消耗性能的一种操作
+
+我们可以通过reduceByKey操作作为一个例子，来理解shuffle操作
+
+reduceByKey算子会将上一个RDD中的每个key对应的所有value都聚合成一个value，然后生成一个新的RDD
+新的RDD的元素类型就是<key,value>对的格式，每个key对应一个聚合起来的value
+这里最大的问题就在于，对于上一个RDD来说，并不是一个key对应的所有value都是在一个partition中的，也更不太可能说key的所有value都在一台机器上
+所以对于这种情况来说，就必须在整个集群中，将各个节点上，同一个key对应的values，统一传输到一个节点上来聚合处理
+这个过程中就会发生大量的网络数据的传输
+
+在进行一个key对应的values的聚合时
+首先，上一个stage的每个map task就必须保证将自己处理的当前分区中的数据，相同的key写入一个分区文件中，可能会写多个不同的分区文件
+接着下一个stage的reduce task就必须从上一个stage所有task所在的机器上，将各个task写入的多个分区文件中，找到属于自己的那个分区文件
+接着将属于自己的分区数据，拉取过来，这样就可以保证每个key对应的所有values都汇聚到一个节点上去处理和聚合
+这个过程就称之为shuffle
+
+shuffle是分为shuffle write和shuffle read两个部分的
+是在两个不同的stage中进行的
+

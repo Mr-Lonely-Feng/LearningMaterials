@@ -1,0 +1,64 @@
+部署安装包
+
+1、使用课程提供的hadoop-2.5.0-cdh5.3.6.tar.gz，上传到虚拟机的/usr/local目录下。（http://archive.cloudera.com/cdh5/cdh/5/）
+2、将hadoop包进行解压缩：tar -zxvf hadoop-2.5.0-cdh5.3.6.tar.gz
+3、对hadoop目录进行重命名：mv hadoop-2.5.0-cdh5.3.6 hadoop
+4、配置hadoop相关环境变量
+vi ~/.bashrc
+export HADOOP_HOME=/usr/local/hadoop
+export PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+source ~/.bashrc
+5、创建/usr/local/data目录
+
+core-site.xml
+
+<property>
+  <name>fs.default.name</name>
+  <value>hdfs://sparkupgrade1:9000</value>
+</property>
+
+hdfs-site.xml
+
+<property>
+  <name>dfs.name.dir</name>
+  <value>/usr/local/data/namenode</value>
+</property>
+<property>
+  <name>dfs.data.dir</name>
+  <value>/usr/local/data/datanode</value>
+</property>
+<property>
+  <name>dfs.tmp.dir</name>
+  <value>/usr/local/data/tmp</value>
+</property>
+<property>
+  <name>dfs.replication</name>
+  <value>0</value>
+</property>
+
+mapred-site.xml
+
+<property>
+  <name>mapreduce.framework.name</name>
+  <value>yarn</value>
+</property>
+
+yarn-site.xml
+
+<property>
+  <name>yarn.resourcemanager.hostname</name>
+  <value>sparkupgrade11</value>
+</property>
+<property>
+  <name>yarn.nodemanager.aux-services</name>
+  <value>mapreduce_shuffle</value>
+</property>
+
+slaves
+
+sparkupgrade1
+sparkupgrade2
+
+在/usr/local目录下，创建data目录
+
+

@@ -1,0 +1,9 @@
+reduce²Ù×÷
+
+List(1, 2, 3, 4).reduceLeft(_ - _)
+List(1, 2, 3, 4).reduceRight(_ - _)
+
+fold²Ù×÷
+
+List(1, 2, 3, 4).foldLeft(10)(_ - _)
+List(1, 2, 3, 4).foldRight(10)(_ - _)

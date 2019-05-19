@@ -1,0 +1,13 @@
+集合的常用方法
+
+head、last、tail
+length、isEmpty
+sum、max、min
+count、exists、filter、filterNot
+takeWhile、dropWhile
+take、drop、splitAt
+takeRight、dropRight
+sclie
+contains、startsWith、endsWith
+indexOf
+intersect、diff

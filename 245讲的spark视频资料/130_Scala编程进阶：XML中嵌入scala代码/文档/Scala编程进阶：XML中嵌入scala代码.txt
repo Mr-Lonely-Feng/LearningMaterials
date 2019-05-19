@@ -1,0 +1,10 @@
+在xml中嵌入scala代码
+
+val books = Array("book1", "book2")
+
+<books><book>{ books(0) }</book><book>{ books(1) }</book></books>
+<books>{ for (book <- books) yield <book>{book}</book> }</books>
+
+还可以在xml属性中嵌入scala代码
+
+<book id={ books(0) }>{ books(0) }</book>

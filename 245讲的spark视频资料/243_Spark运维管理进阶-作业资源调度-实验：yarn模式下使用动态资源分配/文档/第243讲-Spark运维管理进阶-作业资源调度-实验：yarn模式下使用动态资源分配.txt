@@ -1,0 +1,26 @@
+先停止之前为standalone集群启动的shuffle service，./sbin/stop-shuffle-service.sh
+
+配置
+
+动态资源分配功能使用的所有配置，都是以spark.dynamicAllocation作为前缀的。要启用这个功能，你的作业必须将
+spark.dynamicAllocation.enabled设置为true。其他相关的配置之后会详细说明。
+
+此外，你的作业必须有一个外部shuffle服务（external shuffle service）。这个服务的目的是去保存executor的shuffle write
+文件，从而让executor可以被安全地移除。要启用这个服务，可以将spark.shuffle.service.enabled设置为true。在YARN中，这个
+外部shuffle service是由org.apache.spark.yarn.network.YarnShuffleService实现的，在每个NodeManager中都会运行。要启用
+这个服务，需要使用以下步骤：
+
+1、使用预编译好的spark版本。
+2、定位到spark-<version>-yarn-shuffle.jar。这个应该在$SPARK_HOME/lib目录下。
+3、将上面的jar加入到所有NodeManager的classpath中。
+4、在yarn-site.xml中，将yarn.nodemanager.aux-services设置为spark_shuffle，将yarn.nodemanager.aux-services.spark_shuffle.class设置为org.apache.spark.network.yarn.YarnShuffleService
+5、重启所有NodeManager
+
+--conf spark.shuffle.service.enabled=true \
+--conf spark.dynamicAllocation.enabled=true \
+--conf spark.shuffle.service.port=7337 \
+
+1、首先配置好yarn的shuffle service，然后重启集群
+2、接着呢，启动spark shell，并启用动态资源分配，但是这里跟standalone不一样，上来不会立刻申请executor
+3、接着执行wordcount，会尝试动态申请executor，并且申请到后，执行job，在spark web ui上，有两个executor
+4、过了一会儿，60s过后，executor由于空闲，所以自动被释放掉了，在看spark web ui，没有executor了

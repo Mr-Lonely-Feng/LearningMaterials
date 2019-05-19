@@ -1,0 +1,15 @@
+spark中会导致shuffle操作的有以下几种算子
+
+1、repartition类的操作：比如repartition、repartitionAndSortWithinPartitions、coalesce等
+2、byKey类的操作：比如reduceByKey、groupByKey、sortByKey等
+3、join类的操作：比如join、cogroup等
+
+重分区: 一般会shuffle，因为需要在整个集群中，对之前所有的分区的数据进行随机，均匀的打乱，然后把数据放入下游新的指定数量的分区内
+byKey类的操作：因为你要对一个key，进行聚合操作，那么肯定要保证集群中，所有节点上的，相同的key，一定是到同一个节点上进行处理
+join类的操作：两个rdd进行join，就必须将相同join key的数据，shuffle到同一个节点上，然后进行相同key的两个rdd数据的笛卡尔乘积
+
+提醒一下
+
+所以对于上述的操作
+首先第一原则，就是，能不用shuffle操作，就尽量不用shuffle操作，尽量使用不shuffle的操作
+第二原则，就是，如果使用了shuffle操作，那么肯定要进行shuffle的调优，甚至是解决碰到的数据倾斜的问题

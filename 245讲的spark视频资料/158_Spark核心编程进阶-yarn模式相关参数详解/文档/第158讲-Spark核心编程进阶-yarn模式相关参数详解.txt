@@ -1,0 +1,27 @@
+yarn模式运行spark作业所有属性详解
+
+属性名称											默认值							含义
+spark.yarn.am.memory								512m							client模式下，YARN Application Master使用的内存总量
+spark.yarn.am.cores									1								client模式下，Application Master使用的cpu数量
+spark.driver.cores									1								cluster模式下，driver使用的cpu core数量，driver与Application Master运行在一个进程中，所以也控制了Application Master的cpu数量
+spark.yarn.am.waitTime								100s							cluster模式下，Application Master要等待SparkContext初始化的时长; client模式下，application master等待driver来连接它的时长
+spark.yarn.submit.file.replication					hdfs副本数						作业写到hdfs上的文件的副本数量，比如工程jar，依赖jar，配置文件等，最小一定是1
+spark.yarn.preserve.staging.files					false							如果设置为true，那么在作业运行完之后，会避免工程jar等文件被删除掉
+spark.yarn.scheduler.heartbeat.interval-ms			3000							application master向resourcemanager发送心跳的间隔，单位ms
+spark.yarn.scheduler.initial-allocation.interval	200ms							application master在有pending住的container分配需求时，立即向resourcemanager发送心跳的间隔
+spark.yarn.max.executor.failures					executor数量*2，最小3			整个作业判定为失败之前，executor最大的失败次数
+spark.yarn.historyServer.address					无								spark history server的地址
+spark.yarn.dist.archives							无								每个executor都要获取并放入工作目录的archive
+spark.yarn.dist.files								无								每个executor都要放入的工作目录的文件
+spark.executor.instances							2								默认的executor数量
+spark.yarn.executor.memoryOverhead					executor内存10%					每个executor的堆外内存大小，用来存放诸如常量字符串等东西
+spark.yarn.driver.memoryOverhead					driver内存7%					同上
+spark.yarn.am.memoryOverhead						AM内存7%						同上
+spark.yarn.am.port									随机							application master端口
+spark.yarn.jar										无								spark jar文件的位置
+spark.yarn.access.namenodes							无								spark作业能访问的hdfs namenode地址
+spark.yarn.containerLauncherMaxThreads				25								application master能用来启动executor container的最大线程数量
+spark.yarn.am.extraJavaOptions						无								application master的jvm参数
+spark.yarn.am.extraLibraryPath						无								application master的额外库路径
+spark.yarn.maxAppAttempts															提交spark作业最大的尝试次数
+spark.yarn.submit.waitAppCompletion					true							cluster模式下，client是否等到作业运行完再退出

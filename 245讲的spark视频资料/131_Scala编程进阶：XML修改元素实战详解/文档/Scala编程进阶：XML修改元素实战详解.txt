@@ -1,0 +1,29 @@
+修改xml元素
+
+默认情况下，scala中的xml表达式是不可改变的；如果要修改xml元素的话，必须拷贝一份再修改
+
+val books = <books><book>book1</book></books>
+
+添加一个子元素
+val booksCopy = books.copy(child = books.child ++ <book>book2</book>)
+
+val book = <book id="1">book1</book>
+
+import scala.xml._
+
+修改一个属性
+val bookCopy = book % Attribute(null, "id", "2", Null)
+
+添加一个属性
+val bookCopy = book % Attribute(null, "id", "2", Attribute(null, "price", "10.0", Null))
+
+说点闲话
+如果大家真的对java比较精通的话
+然后过来学习这个scala，就会发现有个特点
+
+java的功能是非常强大的
+但是，从各个方面来看，比如io、xml操作、第三方类库的支持、socket、gui界面编程、jdbc访问数据库等等，scala都比java差很多
+
+之所以现在scala有点火，有些人推崇这个scala
+其实主要是因为spark是用scala作为主要的语言开发的（但是spark底层的源码，其实都是java）
+类加载器、线程、反射、线程池等等这些东西，全部都是java底层，外部命令的执行（ProcessBuilder）

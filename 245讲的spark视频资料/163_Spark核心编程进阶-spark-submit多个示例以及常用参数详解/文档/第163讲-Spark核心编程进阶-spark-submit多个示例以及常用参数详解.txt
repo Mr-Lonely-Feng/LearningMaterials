@@ -1,0 +1,61 @@
+# 使用local本地模式，以及8个线程运行
+# --class 指定要执行的main类
+# --master 指定集群模式，local，本地模式，local[8]，进程中用几个线程来模拟集群的执行
+./bin/spark-submit \
+  --class org.leo.spark.study.WordCount \
+  --master local[8] \
+  /usr/local/spark-study.jar \
+
+# 使用standalone client模式运行
+# executor-memory，指定每个executor的内存量，这里每个executor内存是2G
+# total-executor-cores，指定所有executor的总cpu core数量，这里所有executor的总cpu core数量是100个
+./bin/spark-submit \
+  --class org.leo.spark.study.WordCount \
+  --master spark://192.168.0.101:7077 \
+  --executor-memory 2G \
+  --total-executor-cores 100 \
+  /usr/local/spark-study.jar \
+
+# 使用standalone cluster模式运行
+# supervise参数，指定了spark监控driver节点，如果driver挂掉，自动重启driver
+./bin/spark-submit \
+  --class org.leo.spark.study.WordCount \
+  --master spark://192.168.0.101:7077 \
+  --deploy-mode cluster \
+  --supervise \
+  --executor-memory 2G \
+  --total-executor-cores 100 \
+  /usr/local/spark-study.jar \
+
+# 使用yarn-cluster模式运行
+# num-executors，指定总共使用多少个executor运行spark应用
+./bin/spark-submit \
+  --class org.leo.spark.study.WordCount \
+  --master yarn-cluster \  
+  --executor-memory 20G \
+  --num-executors 50 \
+  /usr/local/spark-study.jar \
+
+# 使用standalone client模式，运行一个python应用
+./bin/spark-submit \
+  --master spark://192.168.0.101:7077 \
+  /usr/local/python-spark-wordcount.py \
+
+--class
+application jar
+--master
+--num-executors
+--executor-memory
+--total-executor-cores
+--supervise
+--executor-cores 
+--driver-memory 
+
+./bin/spark-submit \
+  --class org.leo.spark.study.WordCount \
+  --master yarn-cluster \
+  --num-executors 100 \
+  --executor-cores 2 \
+  --executor-memory 6G \
+  --driver-memory  1G \
+  /usr/local/spark-study.jar \

@@ -1,0 +1,41 @@
+1、更细致: 对原来讲过的一些概念，比如说spark-submit，详细讲解每一个细微的点
+2、更完善: 比如说，原来的一些spark核心编程的算子，比较复杂，比如说combineByKey，知识点要讲完善
+3、更实战: 比如说，原来咱们对每个知识点，基本上都做到了代码编写，小案例的实践，提供更多的企业级案例
+4、更深入: 比如说，源码剖析阶段，spark原理的讲解，更细致更深入更透彻，包括了spark常用的一些算子，比如说reduceByKey底层的原理
+5、更新颖: 对于一些spark相关的最新的技术，我认为以后会变得比较流行比较实用的技术，都会讲解，包括zeppelin（spark可视化技术）、tachyon（共享内存技术）
+
+scala进阶编程
+
+伪分布式环境搭建、集群原理、spark-submit、standalone、yarn
+Spark Programming 1.5新内容
+Spark Programming所有算子
+综合案例实战：三个企业级案例实战
+
+透彻细致剖析和讲解spark工作原理
+spark资源调优解决方案（企业级、实用、通用）
+
+Spark SQL：Thrift JDBC/ODBC Server、CLI、综合案例实战、select distinct(count)数据倾斜、java实现查询array类型字段的指定元素
+Spark Streaming：自定义Receiver、Flume数据源、综合案例实战
+
+spark作业监控
+spark作业资源调度
+spark HA高可用（两种方式）
+spark安全
+
+Zeppeline: spark数据可视化技术
+Tachyon: 共享文件系统（内存）技术
+
+spark集群原理概述
+
+spark作业是通过spark集群中的多个独立的进程来并行运行的，每个进程都处理一部分数据，从而做到分布式并行计算，才能对大数据进行处理和计算
+作业在多个进程中的运行，是通过SparkContext对象来居中调度的，该对象是在咱们的driver进程中的（包含main方法的程序进程）
+
+SparkContext是支持连接多种集群管理器的（包括Spark Standalone、YARN、Mesos），集群管理器是负责为SparkContext代表的spark application，在集群中分配资源的
+这里说的资源是什么？通俗一点，就是分配多个进程，然后每个进程不都有一些cpu core和内存，有了进程、cpu和内存，你的spark作业才能运行啊
+
+这里说的进程具体是什么呢？怎么工作的呢？
+
+SparkContext会要求集群管理器来分配资源，然后集群管理器就会集群节点上，分配一个或多个executor进程，这些进程就会负责运行你自己写的spark作业代码，每个进程处理一部分数据
+具体是怎么运行我们的代码的呢？申请到了executor进程之后，SparkContext会发送我们的工程jar包到executor上，这样，executor就有可以执行的代码了
+接着SparkContext会将一些task分发到executor上，每个task执行具体的代码，并处理一小片数据
+此外要注意的一点是，executor进程，会会负责存储你的spark作业代码计算出来的一些中间数据，或者是最终结果数据

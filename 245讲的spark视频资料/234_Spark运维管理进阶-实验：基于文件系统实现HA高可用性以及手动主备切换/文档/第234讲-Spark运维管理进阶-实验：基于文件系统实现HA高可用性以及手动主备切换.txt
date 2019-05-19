@@ -1,0 +1,8 @@
+1、关闭两台机器上的master和worker
+2、修改192.168.0.103机器上的spark-env.sh
+export SPARK_DAEMON_JAVA_OPTS="-Dspark.deploy.recoveryMode=FILESYSTEM -Dspark.deploy.recoveryDirectory=/usr/local/spark_recovery"
+3、在192.168.0.103上启动spark集群
+4、在spark-shell中进行wordcount计数，到一半，有一个running application
+5、杀掉master进程
+6、重启master进程
+7、观察web ui上，是否恢复了worker以及原先正在运行的application

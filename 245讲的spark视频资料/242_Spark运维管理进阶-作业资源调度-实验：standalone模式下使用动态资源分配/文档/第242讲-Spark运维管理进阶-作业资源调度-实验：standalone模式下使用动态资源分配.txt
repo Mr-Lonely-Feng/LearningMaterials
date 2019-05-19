@@ -1,0 +1,12 @@
+./sbin/.start-shuffle-service.sh
+
+--conf spark.shuffle.service.enabled=true \
+--conf spark.dynamicAllocation.enabled=true \
+--conf spark.shuffle.service.port=7337 \
+
+1、启动external shuffle service
+2、启动spark-shell，启用动态资源分配
+3、过60s，发现打印日志，说executor被removed，executor进程也没了
+4、然后动手写一个wordcount程序，最后提交job的时候，会动态申请一个新的executor，出来一个新的executor进程
+5、然后整个作业执行完毕，证明external shuffle service+动态资源分配，流程可以走通
+6、再等60s，executor又被释放掉

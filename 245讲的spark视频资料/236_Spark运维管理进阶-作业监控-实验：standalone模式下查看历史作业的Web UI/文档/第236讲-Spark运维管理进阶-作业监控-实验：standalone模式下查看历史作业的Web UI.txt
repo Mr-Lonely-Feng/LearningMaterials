@@ -1,0 +1,26 @@
+默认情况下，一个作业运行完成之后，就再也无法看到其web ui以及执行信息了，在生产环境中，这对调试以及故障定位有影响。
+
+如果要在作业执行完之后，还能看到其web ui，那么必须将作业的spark.eventLog.enabled属性设置为true，这个属性会告诉spark
+去记录该作业的所有要在web ui上展示的事件以及信息。
+
+如果spark记录下了一个作业生命周期内的所有事件，那么就会在该作业执行完成之后，我们进入其web ui时，自动用记录的数据
+重新绘制作业的web ui。
+
+有3个属性我们可以设置
+
+1、spark.eventLog.enabled，必须设置为true
+2、spark.eventLog.dir，默认是/tmp/spark-events，建议自己手动调整为其他目录，比如/usr/local/spark-event或是hdfs目录，必须手动创建
+3、spark.eventLog.compress ，是否压缩数据，默认为false，建议可以开启压缩以减少磁盘空间占用
+
+这些属性可以在提交一个作业的时候设置
+如果想要对所有作业都启用该机制，那么可以在spark-defaults.conf文件中配置这三个属性
+
+实验
+
+1、先看看之前的已经执行完成的作业，是否可以进入spark web ui界面
+2、关闭现有的master和worker进程
+3、修改spark-defaults.conf文件，配置上述三个属性，启用standalone模式下的作业历史信息记录，手动创建hdfs目录
+4、重新启动spark集群
+5、使用spark-shell提交一个作业，然后再次尝试进入spark web ui界面
+
+注意：如果要让spark完成作业的事件记录，那么必须最后以sc.stop()结尾。

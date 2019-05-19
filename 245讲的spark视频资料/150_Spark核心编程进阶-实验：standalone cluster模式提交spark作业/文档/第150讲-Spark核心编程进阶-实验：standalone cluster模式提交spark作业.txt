@@ -1,0 +1,36 @@
+standalone cluster模式
+
+通常用于，spark作业部署到生产环境中去使用，是用standalone cluster模式
+因为这种模式，会由master在集群中，某个节点上，来启动driver，然后driver会进行频繁的作业调度
+此时driver跟集群在一起，那么是性能比较高的
+
+standalone client模式，在spark-submit脚本执行的机器上，会启动driver进程，然后去进行整个作业的调度
+通常来说，你的spark-submit脚本能够执行的机器，也就是，作为一个开发人员能够登录的机器，通常不会直接是spark集群部署的机器
+因为，随便谁，都登录到spark集群中，某个机器上去，执行一个脚本，这个太扯淡了，没有安全性可言了
+所有此时呢，是这样子，用client模式，你的机器，可能与spark集群部署的机器，都不在一个机房，或者距离很远，那么此时通常遥远的频繁的网络通信
+会影响你的整个作业的执行性能
+
+此外，standalone cluster模式，还支持监控你的driver进程，并且在driver挂掉的时候，自动重启该进程
+要使用这个功能，在spark-submit脚本中，使用--supervise标识即可
+这个跟我们的这个作业关系不是太大，主要是用于spark streaming中的HA高可用性，配置driver的高可用
+
+如果想要杀掉反复挂掉的driver进程，使用以下命令即可: bin/spark-class org.apache.spark.deploy.Client kill <master url> <driver ID>  
+如果要查看driver id，通过http://<maser url>:8080即可查看到
+
+实验观察
+1、日志：命令行只会打印一点点内容，没有什么东西; 主要呢，是在web ui上，可以看到日志
+2、web ui: running drivers出现，此时就可以看到在spark集群中执行的driver的信息; completed drivers
+3、进程: SparkSubmit一闪而过，仅仅只是将driver注册到master上，由master来启动driver，马上就停止了; 在Worker上，会启动DriverWrapper进程
+如果能够申请到足够的cpu资源，其实还会在其他worker上，启动CoarseGrainedExecutorBackend进程
+4、可以通过点击running中的application，去查看作业中的每个job、每个stage、每个executor和task的执行信息，4040端口来看的
+5、对于正在运行的driver或application，可以在web ui上，点击kill按钮，给杀掉
+
+首先呢，cluster模式下，driver也是要通过worker来启动的，executor也是要通过worker来启动的
+首先，我们可以看到，此时driver已经启动起来了，在web ui上是可以看到的，包括driver ID
+然后呢，通过web ui就可以看到，driver在唯一的worker上启动了，已经获取到了一个cpu core了
+此时，driver去跟master申请资源，启动一个executor进程，但是问题来了，此时我们的worker进程，就只有一个，而且只有一个cpu core
+那么，master的资源调度算法中，始终无法找到还有空闲cpu资源的worker，所以作业一直处于等待，waiting的一个状态
+所以，我们的作业在当前1个cpu core下，是无法通过cluster模式来运行的
+
+但是至少我们可以看到，cluster模式的确奏效了，因为已经开始使用cluster模式来执行作业了
+包括driver的启动，开始申请executor

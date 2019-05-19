@@ -1,0 +1,73 @@
+standalone模式启动集群命令详解
+
+我们之前搭建那个伪分布式spark standalone集群的时候，以及我们最早搭建分布式集群的时候
+在启动集群（master进程和worker进程）的时候，大家回忆一下，我们用的是哪个命令，用的是sbin/start-all.sh脚本
+这个脚本一旦执行，就会直接在集群（节点，部署了spark安装包）中，启动master进程和所有worker进程
+
+sbin/start-all.sh脚本，其实是用来便捷地快速启动整个spark standalone集群的
+但是我们本讲呢，就是对spark standalone集群的启动脚本，作一个更加详细和全面的介绍和讲解
+
+我们除了会用sbin/start-all.sh脚本，直接启动整个集群
+还要会用另外两个脚本，单独启动master和worker进程
+
+先讲理论，后面我们来做实验
+
+直接启动master、worker集群，使用sbin/start-all.sh即可
+
+如果你要单独，分别，启动master和worker进程的话
+那么必须得先启动master进程，然后再启动worker进程，因为worker进程启动以后，需要向master进程去注册
+反过来先启动worker进程，再启动这个master进程，可能会有问题
+
+为什么我们有的时候也需要单独启动master和worker进程呢
+因为我们后面会讲的，在单独启动两个进程的时候，是可以通过命令行参数，为进程配置一些独特的参数
+比如说监听的端口号、web ui的端口号、使用的cpu和内存
+比如你想单独给某个worker节点配置不同的cpu和内存资源的使用限制，那么就可以使用脚本单独启动这个worker进程的时候，通过命令行参数来设置
+
+手动启动master进程
+
+需要在某个部署了spark安装包的节点上，使用sbin/start-master.sh启动
+master启动之后，启动日志就会打印一行spark://HOST:PORT URL出来，这就是master的URL地址
+worker进程就会通过这个URL地址来连接到master进程，并且进行注册
+另外，除了worker进程要使用这个URL意外，我们自己在编写spark代码时，也可以给SparkContext的setMaster()方法，传入这个URL地址
+然后我们的spark作业，就会使用standalone模式连接master，并提交作业
+此外，还可以通过http://MASTER_HOST:8080 URL来访问master集群的监控web ui，那个web ui上，也会显示master的URL地址
+
+单独启动master进程以后，你会看到打印出来一行日志文件的名称
+通常就是放在logs/spark-root-org.apache.spark.deploy.master.Master-1-sparkupgrade1.out
+通过这个日志，就可以查看master的启动日志
+
+剧透一下，后面会做单独启动master和worker进程的实验
+启动master的时候，要观察什么呢？要观察一下日志中透露出来的这个master URL
+在http://HOST:8080端口，观察一下master的URL地址
+
+手动启动worker进程
+
+需要在你希望作为worker node的节点上，在部署了spark安装包的前提下，使用sbin/start-slave.sh <master-spark-URL>在当前节点上启动
+如上所述，使用sbin/start-slave.sh时，需要指定master URL
+启动worker进程之后，再访问http://MASTER_HOST:8080，在spark集群web ui上，就可以看见新启动的worker节点，包括该节点的cpu和内存资源等信息
+
+一会儿实验，启动worker之后，要在master web ui上，观察一下新启动的worker节点
+
+此外，以下参数是可以在手动启动master和worker的时候指定的
+
+-h HOST, --host HOST			在哪台机器上启动，默认就是本机，这个很少配
+-p PORT, --port PORT			在机器上启动后，使用哪个端口对外提供服务，master默认是7077，worker默认是随机的，也很少配
+--webui-port PORT				web ui的端口，master默认是8080，worker默认是8081，也很少配
+-c CORES, --cores CORES			仅限于worker，总共能让spark作业使用多少个cpu core，默认是当前机器上所有的cpu core
+-m MEM, --memory MEM			仅限于worker，总共能让spark作业使用多少内存，是100M或者1G这样的格式，默认是1g
+-d DIR, --work-dir DIR			仅限于worker，工作目录，默认是SPARK_HOME/work目录
+--properties-file FILE			master和worker加载默认配置文件的地址，默认是conf/spark-defaults.conf，很少配
+
+咱们举个例子，比如说小公司里面，物理集群可能就一套，同一台机器上面，可能要部署Storm的supervisor进程，可能还要同时部署Spark的worker进程
+机器，cpu和内存，既要供storm使用，还要供spark使用
+这个时候，可能你就需要限制一下worker节点能够使用的cpu和内存的数量
+
+小公司里面，搭建spark集群的机器可能还不太一样，有的机器比如说是有5个g内存，有的机器才1个g内存
+那你对于1个g内存的机器，是不是得限制一下内存使用量，比如说500m
+
+实验
+1、启动master: 日志和web ui，观察master url
+2、启动worker: 观察web ui，是否有新加入的worker节点，以及对应的信息
+3、单独关闭master和worker，顺序得反过来，先关worker，再关master
+4、再次单独启动master和worker，给worker限定--memory参数，就使用500m内存，再到web ui，跟之前看到的worker信息比对一下内存最大使用量
+5、集体关闭集群，再启动集群，保证后面可以正常使用

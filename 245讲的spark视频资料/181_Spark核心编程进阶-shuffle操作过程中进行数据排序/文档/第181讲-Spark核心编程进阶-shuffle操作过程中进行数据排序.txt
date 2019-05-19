@@ -1,0 +1,14 @@
+默认情况下，shuffle操作是不会对每个分区中的数据进行排序的
+
+如果想要对每个分区中的数据进行排序，那么可以使用以下三种方法：
+1、使用mapPartitions算子处理每个partition，对每个partition中的数据进行排序
+2、使用repartitionAndSortWithinPartitions，对RDD进行重分区，在重分区的过程中同时就进行分区内数据的排序
+3、使用sortByKey对数据进行全局排序
+
+上述三种方法中，相对来说，mapPartitions的代价比较小，因为不需要进行额外的shuffle操作
+repartitionAndSortWithinPartitions和sortByKey可能会进行额外的shuffle操作的，因此性能并不是很高
+
+val rdd2 = rdd1.reduceByKey(_ + _)
+rdd2.mapPartitions(tuples.sort)
+rdd2.repartitionAndSortWithinPartitions()，重分区，重分区的过程中，就进行分区内的key的排序，重分区的原理和repartition一样
+rdd2.sortByKey，直接对rdd按照key进行全局性的排序

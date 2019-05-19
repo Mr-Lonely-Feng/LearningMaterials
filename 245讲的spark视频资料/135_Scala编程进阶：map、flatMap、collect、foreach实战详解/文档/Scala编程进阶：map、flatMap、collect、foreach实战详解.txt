@@ -1,0 +1,21 @@
+scala集合map操作实战详解
+
+map操作，一对一映射
+
+val scoreMap = Map("leo" -> 90, "jack" -> 60, "tom" -> 70)
+val names = List("leo", "jack", "tom")
+names.map(scoreMap(_))
+
+flatMap操作，一对多映射
+
+val scoreMap = Map("leo" -> List(80, 90, 60), "jack" -> List(70, 90, 50), "tom" -> List(60,70,40))
+names.map(scoreMap(_))
+names.flatMap(scoreMap(_))
+
+collect操作，结合偏函数使用
+
+"abc".collect { case 'a' => 1; case 'b' => 2; case 'c' => 3 }
+
+foreach操作，遍历
+
+names.foreach(println _)

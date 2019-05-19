@@ -1,0 +1,26 @@
+spark提供了许多功能用来在集群中同时调度多个作业。首先，回想一下，每个spark作业都会运行自己独立的一批executor进程，
+此时集群管理器会为我们提供同时调度多个作业的功能。第二，在每个spark作业内部，多个job也可以并行执行，比如说
+spark-shell就是一个spark application，但是随着我们输入scala rdd action类代码，就会触发多个job，多个job是可以并行执行的。
+为这种情况，spark也提供了不同的调度器来在一个application内部调度多个job。
+
+我们先来看一下多个作业的同时调度
+
+静态资源分配
+
+当一个spark application运行在集群中时，会获取一批独立的executor进程专门为自己服务，比如运行task和存储数据。如果多个
+用户同时在使用一个集群，并且同时提交多个作业，那么根据cluster manager的不同，有几种不同的方式来管理作业间的资源分配。
+
+最简单的一种方式，是所有cluster manager都提供的，也就是静态资源分配。在这种方式下，每个作业都会被给予一个它能使用的
+最大资源量的限额，并且可以在运行期间持有这些资源。这是spark standalone集群和YARN集群使用的默认方式。
+
+Standalone集群: 默认情况下，提交到standalone集群上的多个作业，会通过FIFO的方式来运行，每个作业都会尝试获取所有的
+资源。可以限制每个作业能够使用的cpu core的最大数量（spark.cores.max），或者设置每个作业的默认cpu core使用量
+（spark.deploy.defaultCores）。最后，除了控制cpu core之外，每个作业的spark.executor.memory也用来控制它的最大内存
+的使用。
+
+YARN: --num-executors属性用来配置作业可以在集群中分配到多少个executor，--executor-memory和--executor-cores可以控制
+每个executor能够使用的资源。
+
+要注意的是，没有一种cluster manager可以提供多个作业间的内存共享功能。如果你想要通过这种方式来在多个作业间共享数据，
+我们建议就运行一个spark作业，但是可以接收网络请求，并对相同RDD的进行计算操作。在未来的版本中，内存存储系统，比如
+Tachyon会提供其他的方式来共享RDD数据。

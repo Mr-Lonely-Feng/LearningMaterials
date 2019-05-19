@@ -1,0 +1,15 @@
+在master节点的slaves文件中增加新节点的主机名
+
+在新节点手动启动
+hadoop-daemon.sh start datanode
+yarn-daemon.sh start nodemanager
+
+在主节点
+hdfs dfsadmin -refreshNodes
+start-balancer.sh
+
+通过web ui查看新节点是否增加
+
+停止整个hadoop集群
+然后将dfs.replication修改为1
+再重新启动整个hadoop集群

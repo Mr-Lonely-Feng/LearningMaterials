@@ -1,0 +1,55 @@
+要启用Fair Scheduler，只要简单地将spark.scheduler.mode属性设置为FAIR即可
+
+val conf = new SparkConf().setMaster(...).setAppName(...)
+conf.set("spark.scheduler.mode", "FAIR")
+val sc = new SparkContext(conf)
+
+或者
+
+--conf spark.scheduler.mode=FAIR
+
+fair scheduler也支持将job分成多个组并放入多个池中，以及为每个池设置不同的调度优先级。这个feature对于将重要的和不重要
+的job隔离运行的情况非常有用，可以为重要的job分配一个池，并给予更高的优先级; 为不重要的job分配另一个池，并给予较低的
+优先级。
+
+默认情况下，新提交的job会进入一个默认池，但是job的池是可以通过spark.scheduler.pool属性来设置的。
+
+如果你的spark application是作为一个服务启动的，SparkContext 7*24小时长时间存在，然后服务每次接收到一个请求，就用一个子线程去服务它
+在子线程内部，去执行一系列的RDD算子以及代码来触发job的执行
+在子线程内部，可以调用SparkContext.setLocalProperty("spark.scheduler.pool", "pool1")
+
+在设置这个属性之火，所有在这个线程中提交的job都会进入这个池中。同样也可以通过将该属性设置为null来清空池子。
+
+池的默认行为
+
+默认情况下，每个池子都会对集群资源有相同的优先使用权，但是在每个池内，job会使用FIFO的模式来执行。举例来说，如果
+要为每个用户创建一个池，这就意味着每个用户都会获得集群的公平使用权，但是每个用户自己的job会按照顺序来执行。
+
+配置池的属性
+
+可以通过配置文件来修改池的属性。每个池都支持以下三个属性: 
+
+1、schedulingMode: 可以是FIFO或FAIR，来控制池中的jobs是否要排队，或者是共享池中的资源
+2、weight: 控制每个池子对集群资源使用的权重。默认情况下，所有池子的权重都是1.如果指定了一个池子的权重为2。举例来说，
+它就会获取其他池子两倍的资源使用权。设置一个很高的权重值，比如1000，也会很有影响，基本上该池子的task会在其他所有池子
+的task之前运行。
+3、minShare: 除了权重之外，每个池子还能被给予一个最小的资源使用量。
+
+池子的配置是通过xml文件来配置的，在spark/conf的fairscheduler.xml中配置
+我们自己去设置这个文件的路径，conf.set("spark.scheduler.allocation.file", "/path/to/file")
+
+文件内容大致如下所示
+
+<?xml version="1.0"?>
+<allocations>
+  <pool name="production">
+    <schedulingMode>FAIR</schedulingMode>
+    <weight>1</weight>
+    <minShare>2</minShare>
+  </pool>
+  <pool name="test">
+    <schedulingMode>FIFO</schedulingMode>
+    <weight>2</weight>
+    <minShare>3</minShare>
+  </pool>
+</allocations>

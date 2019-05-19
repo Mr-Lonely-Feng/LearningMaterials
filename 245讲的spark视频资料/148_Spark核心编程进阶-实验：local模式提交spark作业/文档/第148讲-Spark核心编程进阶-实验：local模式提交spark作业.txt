@@ -1,0 +1,16 @@
+之前讲解过，spark作业运行集群，有两种部署方式，一种是Spark Standalone集群，还有一种是YARN集群+Spark客户端
+所以，我们认为，提交spark作业的两种主要方式，就是Spark Standalone和YARN，这两种方式，分别还分为两种模式，分别是client mode和cluster mode
+在体验standalone提交模式之前，咱们呢，先得体验一种Spark中最基本的一种提交模式
+也就是，所谓的local模式
+
+local模式的基本原理
+local模式下，没有所谓的master+worker这种概念
+local模式，相当于，启动一个本地进程，然后在一个进程内，模拟spark集群中作业的运行
+一个spark作业，就对应了进程中的一个或多个executor线程
+就开始执行，包括作业的调度，task分配
+
+在实际工作当中，local模式，主要用于测试
+最常见的就是在我们的开发环境中，比如说eclipse，或者是InteliJ IDEA
+直接运行spark程序，此时就可以采用local模式
+
+本次实验，通过在eclipse中使用local来运行，以及在生产机器上（linux机器）上用local模式来运行

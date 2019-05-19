@@ -1,0 +1,29 @@
+对于Spark作业的监控，Spark给我们提供了很多种方式：Spark Web UI，Spark History Web UI，RESTFUL API以及Metrics。
+
+这里我们就先来看看如何通过Spark Web UI监控作业的运行。
+
+Spark Web UI
+
+每提交一个Spark作业，并且启动SparkContext之后，都会启动一个对应的Spark Web UI服务。默认情况下Spark Web UI的访问地址是
+driver进程所在节点的4040端口。在Spark Web UI上会展示作业相关的详细信息，非常有用，是Spark作业监控的最主要的手段。
+
+Spark Web UI包括了以下信息：
+
+1、stage和task列表
+2、RDD大小以及内存使用的概览
+3、环境信息
+4、作业对应的executor的信息
+
+可以通过在浏览器中访问http://<driver-node>:4040地址，来进入Spark Web UI界面。如果多个driver在一个机器上运行，它们
+会自动绑定到不同的端口上。默认从4040端口开始，如果发现已经被绑定了，那么会选择4041、4042等端口，以此类推。
+
+要注意的是，这些信息默认情况下仅仅在作业运行期间有效并且可以看到。一旦作业完毕，那么driver进程以及对应的web ui服务
+也会停止，我们就无法看到已经完成的作业的信息了。如果要在作业完成之后，也可以看到其Spark Web UI以及详细信息，那么就
+需要启用Spark的History Server。
+
+监控实验
+
+1、通过spark-shell以standalone模式执行一个wordcount作业，通过直接访问4040端口以及从8080端口两种方式进入web ui。
+2、在作业运行完毕之后，再尝试看看作业的Web UI。
+3、通过spark-shell以yarn模式执行一个wordcount作业，并重复上述过程。
+
