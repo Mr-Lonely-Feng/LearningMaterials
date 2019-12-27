@@ -1,0 +1,47 @@
+
+PySpark
+    针对SparkSQL框架DataFrame
+
+Hive -> Shark -> SparkSQL
+
+Linux环境配置pyspark针对PyCharm IDE环境
+-1, 解压pyspark相关模块
+    $ cd /opt/cdh-5.3.6/spark-1.6.1-bin-2.5.0-cdh5.3.6/python/lib
+    解压
+    $ unzip pyspark.zip
+    $ unzip py4j-0.9-src.zip
+-2, 进入python命令行
+    $ python
+    >>> import sys
+    >>> sys.path
+['', '/usr/local/lib/python27.zip', '/usr/local/lib/python2.7', '/usr/local/lib/python2.7/plat-linux2', '/usr/local/lib/python2.7/lib-tk', '/usr/local/lib/python2.7/lib-old', '/usr/local/lib/python2.7/lib-dynload', '/usr/local/lib/python2.7/site-packages']
+    此时确定将Python的第三方模块放入
+        /usr/local/lib/python2.7/site-packages    
+-3, 加入pyspark相关模块到对应目录下
+
+作业：
+    在Linux系统下安装Anaconda，并配置好PyCharm，包含pyspark模块。
+
+
+思考：
+SparkSQL与Hive集成
+    读取Hive表中的数据
+    -1, 将hive-site.xml放到SparkSQL应用的classpath
+        放入到${SPARK_HOME}/conf/
+    -2, MetaStore数据库驱动包
+        CLASSPATH
+
+
+SparkSQL/Hive中函数
+    - UDF
+        一对一    python支持
+    - UDAF
+        多对一
+    -UDTF
+        一对多
+
+SparkStreaming开发
+    实时流式计算
+    在企业中使用更多的语言反而是JAVA，SCALA也不少，使用Python非常少。
+
+    

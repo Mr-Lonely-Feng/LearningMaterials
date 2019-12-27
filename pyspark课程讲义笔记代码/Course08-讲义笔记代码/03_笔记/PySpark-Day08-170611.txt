@@ -1,0 +1,45 @@
+
+
+
+HBase与Python集成使用
+    基于Python语言访问存储在HBase数据库中的数据。
+    - hbase
+        与python相关模块
+        - thrift与python模块
+        - hbase与python模块
+        HBase启动Thrift服务
+        bin/hbase-daemon.sh start thrift 
+    - spark
+        与python相关模块
+        - pyspark模块
+        - py4j
+
+对于初学者来说，使用Python进行数据分析处理
+    - 字符
+        2.x中
+    - 模块
+        模块安装
+
+爬虫分析案例：
+    基于Python+HBase+SparkSQL分析
+    - 使用Python爬虫库
+        爬取网站的数据
+    - 将数据存储到HBase表中
+        Python访问HBase表
+    - 使用SparkSQL进行数据统计分析
+        PySpark SQL读取HBase表的数据
+    - 使用Python图表库展示
+
+
+数据统计分析：
+    -1, 数据总览概要信息
+    -2, HTTP响应状态统计
+    -3, 客户端访问频率统计
+    -4, URIs访问量统计
+    -5, 统计HTTP犯规状态不是200的十大URI
+    -6, 统计host的数量
+    -7, 统计每天host访问量
+    -8, 日均host访问量
+    -9, 404状态数据分析
+
+

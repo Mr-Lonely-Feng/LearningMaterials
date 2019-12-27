@@ -1,0 +1,118 @@
+
+SparkStreaming 
+    在企业使用越来越广泛，使用更得语言不是Python语言，而是JAVA和SCALA，因此使用Python进行开发作为了解即可，不需太深入，在企业中不建议。
+DStream
+    不是分布式的流，而是分离的流
+    batch interval
+        批处理时间
+    RDDs
+        SparkCore
+    基于SparkCore之上的高级API封装使用，为我们方便的处理流式数据
+
+建议：
+    在实际项目针对SparkStreaming开发来说，要么是SCALA语言，要么是JAVA语言，根本不会是Python语言，运行太慢太慢。
+
+
+曾经有人问过我：
+    Spark高级分析模块SparkGraphX和SparkMLlib是否支持Python开发呢？？
+    通过官方Reference：
+        - SparkGraphX来说，目前来说不支持Python不太友好，不建议使用
+        - SparkMLlib来说
+            支持Python语言
+            - RDD 
+                数据封装
+            - DataFrame
+                数据封装
+
+作业：
+    使用JAVA语言或者SCALA语言实现，SparkStreaming自定义输出，包含每批次处理的批次时间。
+
+================================================================
+日志分析案例：
+    美国宇航局肯尼迪航天中心WEB日志
+	-1, 网址：
+		http://ita.ee.lbl.gov/html/contrib/NASA-HTTP.html
+    -2, 日志信息数据结构
+        https://www.w3.org/Daemon/User/Config/Logging.html#common-logfile-format
+
+真实数据：
+    uplherc.upl.com - - [01/Aug/1995:00:00:07 -0400] "GET / HTTP/1.0" 304 0
+
+The common logfile format is as follows:
+    remotehost rfc931 authuser [date] "request" status bytes
+- remotehost
+    Remote hostname (or IP number if DNS hostname is not available, or if DNSLookup is Off.
+- rfc931
+    The remote logname of the user.
+- authuser
+    The username as which the user has authenticated himself.
+- [date]
+    Date and time of the request.
+- "request"
+    The request line exactly as it came from the client.
+- status
+    The HTTP status code returned to the client.
+- bytes
+    The content-length of the document transferred.
+
+
+项目案例：
+    -1, 真实的数据
+        处理
+    -2, 如何分析数据
+        流程
+        “脏”数据过滤清洗
+    -3, 技术评估
+        SparkSQL(pyspark)
+
+
+-1, 数据调研
+    样本数据
+    字段信息
+-2, 数据ETL
+    数据准备（数据采集）
+    数据解析
+    数据清洗
+    数据转换
+-3, 数据统计分析
+    数据总览
+    HTTP响应状态统计
+    客户端访问频率统计
+    日均host访问量
+    .......
+
+其中将会涉及到一些SparkSQL中函数的使用
+    functions内中的一些函数，也是企业中经常使用到的。
+
+作业：
+    过滤掉字段为null的数据，得到是相对完成符合处理的数据。
+
+
+
+
+
+
+
+
+
+
+
+
+	-1, 网址：
+		http://ita.ee.lbl.gov/html/contrib/NASA-HTTP.html
+
+
+
+
+
+
+split_df = base_df.select(
+	regexp_extract('value', r'^([^\s]+\s)', 1).alias('host'), 
+	regexp_extract('value', r'^.*\[(\d\d/\w{3}/\d{4}:\d{2}:\d{2}:\d{2} -\d{4})]', 1).alias('timestamp'),
+	regexp_extract('value', r'^.*"\w+\s+([^\s]+)\s+HTTP.*"', 1).alias('path'),
+	regexp_extract('value', r'^.*"\s+([^\s]+)', 1).cast('integer').alias('status'),
+	regexp_extract('value', r'^.*\s+(\d+)$', 1).cast('integer').alias('content_size')
+)
+
+
+

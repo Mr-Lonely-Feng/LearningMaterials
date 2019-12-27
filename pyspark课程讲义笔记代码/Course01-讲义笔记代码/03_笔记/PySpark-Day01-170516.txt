@@ -1,0 +1,140 @@
+
+直播课听课注意事项：
+    - 声音
+        听得见，没有太多的杂音
+    - 画面
+        清晰度
+        与声音的同步性如何（延迟性）
+
+====================================================
+基于Python Spark的大数据分析
+    PySpark
+
+基于Python语言的Spark编程
+
+课程内容提纲：
+    -1, PySpark编程及提纲
+        内容
+    -2, PySpark 环境搭建
+        Python 
+        PyCharm（IDEA）
+    -3，WordCount程序
+        分布式计算经典案例
+    -4，答疑
+        学习过程中
+        人生、理想
+
+================================================
+赤子
+    python的数据分析和spark的数据分析有什么区别
+python 数据分析：
+    对数据处理 单机模式
+spark 数据分析：
+    对数据处理 分布式计算
+    spark属于大数据计算框架：分布式、内存的
+python机器学习和spark机器学习
+    使用各自的语言实现 机器学习算法 -> 库
+    以便用户进行使用
+        input data -> 算法库 -> output data 
+
+Spark SQL
+    1.3: DataFrame  -> Python: Padas
+
+=================================================
+为什么PySpark编程呢？？？
+    -1，Python语言
+        第三大编程语言
+    -2，Spark SQL 
+        DSL（另外一种分析SQL）
+        大数据分析师
+            SQL（HIVE）/SparkSQL(SQL\DataFrame)
+    在企业中如果使用Spark框架进行数据分析的时候，使用最多的模块为SparkSQL（DataFrame/SQL）
+    -3，Spark官方Databricks公司
+        技术分享时Spark案例都是Python语言开发
+    -4，Python 为传统的大数据分析编程语言
+        第三方包
+    -5，HBase 与 Python
+        游戏公司HBase：基于HDFS分布式数据库
+        从HBase表中获取数据采用Python语言
+        Python进行网络爬取数据，将数据直接存储到HBase表中，为了语言方便性。
+    案例思路：
+        Python爬虫 -> HBase -> SparkSQL DataFrame(PySpark) -> Python 图形化展示
+        notebook
+2017年大数据工程师必备的技能
+    从网络爬取数据
+    -1, JAVA语言框架
+        Nutch （HADOOP）
+    -2，Python语言框架
+        包
+
+======================================
+面向人群
+    有一定Hadoop和Spark框架基础要提升的学习者
+        SCALA语言
+    尚不会使用基于Python的Spark大数据分析师从业者
+    想使用Python进行开发的大数据工程师
+
+
+Python 介绍
+    简单：比SCALA语言还要简单
+    编程语言
+        脚本语言（shell）
+        函数式编程Lambda（JAVA 8）
+            分布式计算
+        面向对象编程
+    如果会SCALA语言的话，Python都不是事，分分钟
+        建议大家有一本Python基础语法书
+    版本：
+        2.x
+            2.7.x 
+        3.x            
+
+SCALA：交互式命令行
+Python：交互式命令行
+JAVA 9中支持jshell命令行
+
+Python安装：
+    -1，Windows
+        msi 双击即可
+        配置环境变量
+
+    -2，Linux
+        两种方式：
+            - 源码编译
+            - rpm
+Linux操作系统默认支持安装Python，版本为2.6
+
+
+Python中的注释：
+    - 单行注释，使用#
+    - 文档注释，""" """
+
+PySpark来说，需要两个模块（与Python相关）
+    -1, py4j
+        python for java 
+        将Python语言编程转换为JAVA语言编程
+    -2, pyspark
+        Python for Spark 
+
+
+配置PySpark模块到PyCharm下（针对Python2.7.9版本）
+    在Windows下进行配置
+    -1, 解压文件
+        ${SPARK_HOME}/python/lib
+            /py4j-0.9-src.zip
+            /pyspark.zip
+    -2, 将解压的文件放入Python目录
+        目录为：${PYTHON_HOME}/Lib/site-packages
+    -3, 重启PyCharm或者刷新
+
+
+在Python中 匿名函数
+    lambda  表达式
+    比如：
+        lambda 参数列表: 表达式
+        两个数的和
+            lambda x, y: x + y
+如何确定一个函数：
+    - 函数的参数
+    - 函数的返回值
+

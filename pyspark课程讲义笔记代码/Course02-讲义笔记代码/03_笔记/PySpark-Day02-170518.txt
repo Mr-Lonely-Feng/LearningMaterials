@@ -1,0 +1,115 @@
+
+上课前十分钟：
+    答疑的时间
+
+基于PySpark大数据分析，学习的话需要基础：
+    Python + Spark
+    -1, 不要求大家会Python语言
+    -2, Spark基本编程
+        SparkCore
+        SparkSQL
+    -3, HADOOP 2.x
+        环境
+    -4, SCALA 语言
+    使用Python语言编程依据大数据框架Spark实现数据分析
+=================================================
+
+5.16 以及 5.18 号两次PySpark课程录屏
+    http://www.xuetuwuyou.com/course/173
+
+
+=================================================
+回顾上一次课程内容：
+    所有的都是在Windows下面操作的
+    -1, PySpark 
+        Python
+        Spark 
+    -2, Python安装
+        基本使用
+            函数定义、列表list
+            匿名函数和lambda表达式
+    -3, pySpark 包安装
+        py4j
+        pyspark
+    -4, PyCharm
+        IDE
+    -5, WordCount
+        SparkCore:Python 
+
+====================================================
+Case：WordCount
+-i, 从HDFS读取数据
+    不行的呢？？？？？
+    思考：
+        此时读取HDFS文件系统上的文件，也就是说此时程序充当HDFS Client，既然是Client的话，对文件系统上的数据读写操作时，应该读取相关HDFS Client配置信息。
+            - 要知道HDFS中NameNode节点的位置
+            - 其他属性配置
+        回顾： 
+            使用IDEA开发Spark程序时，将配置文件直接放在MAVEN工程的resouces目录下，程序自动加载。
+     解决：
+# 第二种方式：从HDFS分布式文件系统读取数据，创建RDD
+"""
+    需要将HDFS Client 配置文件当到 ${SPARK_HOME}/conf 下面，以便程序运行读取信息
+"""
+rdd = sc.textFile("/datas/wc.input")               
+-ii, sortByKey/TopKey
+
+对海量的数据（大规模的数据）分析，最简单的就是统计分析：
+    -1，清洗过滤
+        原始数据
+    -2，分组
+        group by，多个分组在一起
+    -3，统计
+        count 
+    -4，排序
+        对每个分组统计的值进行排序，降序排序
+    -5，TopKey
+        获取前Key值
+
+在Python中对于Boolean类型，两个值
+    True
+    False
+
+ANACONDA                Python 
+CDH5.x/HDP2.x           Apache Hadoop 
+-1, 开源版本，企业版本
+-2, 孤零零与其他整合，没有很好联系在一起
+    生态系统放在一起，版本兼容性，方便开发使用
+
+
+Anaconda 版本：
+    总的版本号4.2.0
+    -1, Anaconda3针对Python 3.x版本	
+        Anaconda3-4.2.0-Windows-x86.zip
+        Anaconda3-4.2.0-Windows-x86_64.zip
+    -2, Anaconda2针对Python 2.x版本
+        Anaconda2-4.2.0-Windows-x86.zip	
+        Anaconda2-4.2.0-Windows-x86_64.zip	
+https://www.continuum.io/downloads
+
+针对Anaconda配置pyspark模块
+    将py4j和pyspark模块放到Anaconda安装目录的
+        ${ANACONDA_HOME}/Lib/site-packages/
+
+作业：
+    如何在Linux下安装Python，基于源码安装。
+
+
+Spark Application运行模式
+    -1, Local Mode
+        开发测试
+    -2, Cluster Mode
+        - Standalone Cluster
+        - YARN Cluster
+        - Mesos Cluster
+    比如针对交互式命令行spark-shell来说
+        bin/spark-shell --master local[2]
+
+Spark Application基于Python编写以后，如何运行呢？？
+$ bin/spark-submit --help
+Usage: spark-submit [options] <app jar | python file> [app arguments]
+比如：
+    将程序运行在local mode，启动2个Thread
+bin/spark-submit \
+--master local[2] \
+/opt/cdh-5.3.6/spark-1.6.1-bin-2.5.0-cdh5.3.6/spark_word_count.py  

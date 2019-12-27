@@ -1,0 +1,30 @@
+
+SparkSQL
+    python 语言编程的重点
+    1.3开始
+        DataFrame：一切要处理的数据封装在集合中，建立在RDD之上
+    Python-Pandas
+
+回顾：
+    SparkSQL来说程序开发的入口是SQLContext(1.x)
+        - read
+            sqlContext.read.json()/.table()/jdbc()
+            RDD -> DataFrame 
+        - process
+                - SQL
+                    sqlContext.sql()
+                - DSL
+                    DataFrame#API
+        - write
+            dataframe.write.json()/table()/jdbc()
+
+
+从HDFS读取数据，转换为DataFrame，基于SQL或者DSL进行数据分析
+    RDD -> DataFrame(SCALA)
+        方式一：
+            RDD[CASE CLASS] -> 自动依据反射进行推断类型转换
+        方式二；
+            自定义schema
+            -1, RDD[Row]
+            -2, schema
+            -3, sqlContext.createDataFrame(rowRDD, schema)

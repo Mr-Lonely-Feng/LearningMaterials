@@ -1,0 +1,107 @@
+
+后续课程内容和时间安排
+    授课时间：
+        每周2次（周三、周日，晚上20:30 - 22:00）
+        提供在线视频，课后反复学习
+        每次授课的视频、笔记、代码、讲义等24小时之内放入【学徒无忧】官方
+        课程目录下。
+    具体安排：
+        https://ke.qq.com/course/209627#tuin=b0863983
+    课程结束：
+        6.15之前
+    备注：
+        三周之内短时间里，提升PySpark学习
+
+================================================================  
+在Linux下安装Python
+    在Linux安装软件
+        - 源码编译
+            tar \ ./configure \ make  \ make install 
+        - RPM包安装
+            rpm -ivh 
+        - yum安装
+            在线/本地部署源
+    安装：
+        - 安装devtoolset
+            # yum groupinstall "Development tools"
+        - 安装编译Python是需要的包
+            # yum install zlib-devel bzip2-devel openssl-devel sqlite-devel 
+        - 解压源码包
+            $ tar -zxf Python-2.7.9.tar.gz
+        - 编译与安装
+            # cd Python-2.7.9
+            # ./configure --prefix=/usr/local
+            # make && make install
+        - 检查
+            $ python -V
+            $ which python
+            /usr/local/bin/python
+
+pySpark :
+    SparkContext -> py4j  -> JavaSparkContext 调度程序
+
+
+Spark 
+    - spark 源码编写
+        针对不同HADOOP版本，是否支持Hive等等
+    - 原理
+        - Spark API 
+            RDD
+        - Storage 
+            HDFS
+        - Cluster Computing
+            Standalon
+                Master：集群资源的管理者和调度Application
+                Worker：每个节点资源管理者和分配给Application
+                    通常情况一台机器只运行一个Worker：Memory和CPU Core
+            YARN
+            Mesos
+        - 重要配置文件
+            - spark-env.sh
+                所有Spark应用和Spark 服务组件，都要读取此配置文件内容
+JAVA_HOME=/opt/modules/jdk1.7.0_67
+SCALA_HOME=/opt/modules/scala-2.10.4
+HADOOP_CONF_DIR=/opt/cdh-5.3.6/hadoop-2.5.0-cdh5.3.6/etc/hadoop
+SPARK_MASTER_IP=bigdata-training01.hpsk.com
+SPARK_MASTER_PORT=7077
+SPARK_MASTER_WEBUI_PORT=8080
+SPARK_WORKER_CORES=2
+SPARK_WORKER_MEMORY=2g
+SPARK_WORKER_PORT=7078
+SPARK_WORKER_WEBUI_PORT=8081
+SPARK_WORKER_INSTANCES=1
+        - Spark Minitor
+            Application Running
+                http://driver-node:4040
+            Application Completed
+                HistoryServer
+- 记录Application运行时日志信息
+    Event Log
+    保存在HDFS目录
+    cong/spark-defualt.conf
+spark.eventLog.enabled     true
+spark.eventLog.dir         hdfs://bigdata-training01.hpsk.com:8020/datas/spark/eventLogs/
+spark.eventLog.compress    true    
+- 启动服务Server读取日志信息
+    Event Log 
+SPARK_HISTORY_OPTS="-Dspark.history.fs.logDirectory=hdfs://bigdata-training01.hpsk.com:8020/datas/spark/eventLogs/ -Dspark.history.fs.cleaner.enabled=true"
+
+Spark Application 运行在集群
+    - Driver 
+        应用的管理者SparkContext
+            - 读取数据
+            - 调用Job
+    - Executors
+        CPU CORE：
+        Memory：
+        Number：
+
+Python中如何从执行命令行获取传递的参数值
+    sys.argv[1]
+
+===========================================================
+一号店某天两个小时用户访问网站行为数据
+    18 、19
+需求：
+    统计每日的PV和UV
+    
